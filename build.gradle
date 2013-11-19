@@ -1,0 +1,37 @@
+// this is the part that adds the GMCP plugin to your project
+buildscript {
+	repositories { mavenCentral() }
+	dependencies { classpath 'com.github.abrarsyed.gmcp:GMCP:latest.integration' }
+}
+
+apply plugin: "gmcp"  // actually applies the plugin.
+
+group = 'scp'  // your base page
+version = "1.0.0"
+archivesBaseName = 'CreepyPastaCraft'
+
+version = "${minecraft.minecraftVersion}-$version.${System.getenv().BUILD_NUMBER}"
+
+processResources
+{
+        // replace stuff in text files, not binary ones.
+    from(sourceSets.main.resources.srcDirs) {
+        include '**/*.lang'
+        include '**/*.info'
+                
+                // replace version and MCVersion
+                // forge version is also accessible via project.minecraftforgeVersion
+                // it contains the full minecraft version, including buildNumber
+        expand 'version':project.version, 'mcversion':project.minecraft.minecraftVersion
+    }
+        
+        // copy everything else, thats not text
+    from(sourceSets.main.resources.srcDirs) {
+        exclude '**/*.lang'
+        exclude '**/*.info'
+    }
+}
+
+minecraft {
+	minecraftVersion = "1.6.4"
+}
